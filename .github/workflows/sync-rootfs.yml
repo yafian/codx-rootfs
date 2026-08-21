@@ -49,6 +49,33 @@ jobs:
         run: bash scripts/download-manjaro.sh
         continue-on-error: true
 
+      - name: Generate versions.json
+        run: |
+          echo "[]" > dist/versions.json
+          for f in dist/*.tar.xz; do
+            [ -f "$f" ] || continue
+            BASENAME=$(basename "$f")
+            SIZE=$(stat -c%s "$f")
+            HASH=$(sha256sum "$f" | awk '{print $1}')
+            # Extract distro id from filename (e.g. "alpine-3.24.1-aarch64.tar.xz" -> "alpine")
+            DISTRO_ID=$(echo "$BASENAME" | sed 's/-[0-9].*//' | sed 's/-aarch64.*//' | sed 's/-x86_64.*//')
+            python3 -c "
+          import json, sys
+          with open('dist/versions.json') as f:
+              data = json.load(f)
+          data.append({
+              'id': '$DISTRO_ID',
+              'fileName': '$BASENAME',
+              'sha256': '$HASH',
+              'size': $SIZE
+          })
+          with open('dist/versions.json', 'w') as f:
+              json.dump(data, f, indent=2)
+          "
+          done
+          echo "Generated versions.json:"
+          cat dist/versions.json
+
       - name: Create release
         run: |
           ls -lh dist/
@@ -64,7 +91,7 @@ jobs:
             cd dist
             sha256sum *.tar.xz > SHA256SUMS
             cd ..
-            gh release create "$VERSION" dist/*.tar.xz dist/SHA256SUMS \
+            gh release create "$VERSION" dist/*.tar.xz dist/SHA256SUMS dist/versions.json \
               --title "CodX rootfs $VERSION" \
               --generate-notes
           else
