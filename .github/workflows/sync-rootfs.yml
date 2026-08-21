@@ -51,12 +51,13 @@ jobs:
 
       - name: Create release
         run: |
+          ls -lh dist/
           if ls dist/*.tar.xz 1>/dev/null 2>&1; then
             VERSION=$(date +%Y.%m.%d-%H%M)
             cd dist
             sha256sum *.tar.xz > SHA256SUMS
             cd ..
-            gh release create "$VERSION" dist/* \
+            gh release create "$VERSION" dist/*.tar.xz dist/SHA256SUMS \
               --title "Rootfs $VERSION" \
               --generate-notes
           else
