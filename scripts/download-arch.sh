@@ -3,14 +3,15 @@
 set -e
 
 echo "Downloading Arch Linux ARM..."
-mkdir -p dist
+mkdir -p dist rootfs
 
 VERSION=$(date +%Y%m%d)
 
 curl -sL "http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz" -o arch.tar.gz
 
-mkdir -p rootfs
-tar -xzf arch.tar.gz -C rootfs --no-same-permissions --no-same-owner 2>/dev/null
+# Extract with bsdtar (handles symlinks better)
+sudo apt-get install -y libarchive-tools 2>/dev/null || true
+bsdtar -xzf arch.tar.gz -C rootfs
 
 # Strip kernel and firmware (proot doesn't need them)
 rm -rf rootfs/boot/*
