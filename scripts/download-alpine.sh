@@ -5,14 +5,13 @@ set -e
 echo "Downloading Alpine Linux..."
 mkdir -p dist
 
-# Get latest stable version
-VERSION=$(curl -sL "https://dl-cdn.alpinelinux.org/alpine/latest-stable/releases/aarch64/latest-releases.yaml" | grep "minirootfs" | head -1 | awk '{print $2}')
+FILE=$(curl -sL "https://dl-cdn.alpinelinux.org/alpine/latest-stable/releases/aarch64/latest-releases.yaml" | grep "file: alpine-minirootfs" | head -1 | awk '{print $2}')
+VERSION=$(echo "$FILE" | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
+BRANCH="${VERSION%.*}"
 echo "Latest Alpine: $VERSION"
 
-# Download
-curl -sL "https://dl-cdn.alpinelinux.org/alpine/v${VERSION%.*}/releases/aarch64/alpine-minirootfs-${VERSION}-aarch64.tar.gz" -o alpine.tar.gz
+curl -sL "https://dl-cdn.alpinelinux.org/alpine/v${BRANCH}/releases/aarch64/${FILE}" -o alpine.tar.gz
 
-# Repackage as .tar.xz
 mkdir -p rootfs
 tar -xzf alpine.tar.gz -C rootfs
 cd rootfs && tar -cf ../dist/alpine-aarch64.tar . && cd ..

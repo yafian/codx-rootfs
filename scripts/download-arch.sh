@@ -5,10 +5,8 @@ set -e
 echo "Downloading Arch Linux ARM..."
 mkdir -p dist
 
-# Download
 curl -sL "http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz" -o arch.tar.gz
 
-# Extract, remove kernel, repackage
 mkdir -p rootfs
 tar -xzf arch.tar.gz -C rootfs
 rm -rf rootfs/boot/*
