@@ -51,35 +51,64 @@ jobs:
 
       - name: Generate versions.json
         run: |
-          echo "[]" > dist/versions.json
-          for f in dist/*.tar.xz; do
-            [ -f "$f" ] || continue
-            BASENAME=$(basename "$f")
-            SIZE=$(stat -c%s "$f")
-            HASH=$(sha256sum "$f" | awk '{print $1}')
-            DISTRO_ID=$(echo "$BASENAME" | sed 's/-[0-9].*//' | sed 's/-aarch64.*//' | sed 's/-x86_64.*//')
-            # Look for version/codename from metadata.jsonl written by scripts
-            META=$(grep "\"id\":\"${DISTRO_ID}\"" dist/metadata.jsonl 2>/dev/null || echo "")
-            VERSION=$(echo "$META" | python3 -c "import sys,json; d=json.loads(sys.stdin.readline()); print(d.get('version',''))" 2>/dev/null || echo "")
-            CODENAME=$(echo "$META" | python3 -c "import sys,json; d=json.loads(sys.stdin.readline()); print(d.get('codename',''))" 2>/dev/null || echo "")
-            python3 -c "
-          import json, sys
-          with open('dist/versions.json') as f:
-              data = json.load(f)
-          data.append({
-              'id': '$DISTRO_ID',
-              'fileName': '$BASENAME',
-              'version': '$VERSION',
-              'codename': '$CODENAME',
-              'sha256': '$HASH',
-              'size': $SIZE
-          })
-          with open('dist/versions.json', 'w') as f:
-              json.dump(data, f, indent=2)
-          "
-          done
-          echo "Generated versions.json:"
-          cat dist/versions.json
+          python3 << 'PYEOF'
+          import json, hashlib, os, glob
+
+          # Load metadata from download scripts
+          metadata = {}
+          meta_path = "dist/metadata.jsonl"
+          if os.path.exists(meta_path):
+              with open(meta_path) as f:
+                  for line in f:
+                      line = line.strip()
+                      if not line:
+                          continue
+                      entry = json.loads(line)
+                      metadata[entry["id"]] = entry
+
+          # Build versions.json from actual files
+          versions = []
+          for f in sorted(glob.glob("dist/*.tar.xz")):
+              basename = os.path.basename(f)
+              size = os.path.getsize(f)
+              sha256 = hashlib.sha256(open(f, "rb").read()).hexdigest()
+
+              # Find matching metadata by filename
+              info = None
+              for entry in metadata.values():
+                  if entry.get("fileName") == basename:
+                      info = entry
+                      break
+
+              # Fallback: extract id from filename
+              if not info:
+                  # Try common patterns
+                  for prefix in ["opensuse-leap", "archlinux", "debian", "ubuntu",
+                                  "alpine", "rocky", "void", "manjaro"]:
+                      if basename.startswith(prefix):
+                          info = {"id": prefix, "version": "", "codename": ""}
+                          break
+
+              distro_id = info["id"] if info else basename.split("-")[0]
+              version = info.get("version", "") if info else ""
+              codename = info.get("codename", "") if info else ""
+
+              versions.append({
+                  "id": distro_id,
+                  "fileName": basename,
+                  "version": version,
+                  "codename": codename,
+                  "sha256": sha256,
+                  "size": size,
+              })
+
+          with open("dist/versions.json", "w") as f:
+              json.dump(versions, f, indent=2)
+
+          print("Generated versions.json:")
+          with open("dist/versions.json") as f:
+              print(f.read())
+          PYEOF
 
       - name: Create release
         run: |
