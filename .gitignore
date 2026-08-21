@@ -1,0 +1,9 @@
+# Build artifacts
+dist/
+*.tar
+*.tar.xz
+*.tar.gz
+
+# Temporary files
+*.tmp
+*.log

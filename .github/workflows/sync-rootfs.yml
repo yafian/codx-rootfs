@@ -1,0 +1,29 @@
+name: Sync Rootfs from Upstream
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # Every Monday
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync all distros
+        run: |
+          for script in scripts/download-*.sh; do
+            bash "$script"
+          done
+
+      - name: Create release
+        run: |
+          VERSION=$(date +%Y.%m.%d)
+          find dist -name "*.tar.xz" -exec sha256sum {} \; > dist/SHA256SUMS
+          gh release create "$VERSION" dist/* \
+            --repo ${{ github.repository }} \
+            --title "Rootfs $VERSION" \
+            --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
