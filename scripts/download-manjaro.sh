@@ -10,8 +10,7 @@ echo "Latest Manjaro: $VERSION"
 
 curl -sL "https://github.com/manjaro-arm/rootfs/releases/download/${VERSION}/Manjaro-ARM-aarch64-latest.tar.gz" -o manjaro.tar.gz
 
-# Recompress without extracting (avoids symlink issues)
-gunzip -c manjaro.tar.gz | tar -cf dist/manjaro-aarch64.tar -
+gunzip -c manjaro.tar.gz > dist/manjaro-aarch64.tar
 xz -9 dist/manjaro-aarch64.tar
 rm -f manjaro.tar.gz
 
