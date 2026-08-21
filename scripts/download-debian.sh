@@ -1,11 +1,14 @@
 #!/bin/bash
-# download-debian.sh — Download Debian rootfs from official mirrors
+# download-debian.sh — Download Debian rootfs from Docker Hub
 set -e
 
 echo "Downloading Debian..."
 mkdir -p dist
 
-# Download trixie base from Debian mirrors
-curl -sL "https://deb.debian.org/debian/dists/trixie/main/installer-arm64/current/images/netboot/debian-installer/arm64/rootfs.tar.xz" -o dist/debian-aarch64.tar.xz
+docker pull debian:trixie
+docker create --name debian debian:trixie
+docker export debian -o dist/debian-aarch64.tar
+docker rm debian
+xz -9 dist/debian-aarch64.tar
 
 echo "Done: dist/debian-aarch64.tar.xz"

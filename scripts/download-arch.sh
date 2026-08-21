@@ -7,11 +7,10 @@ mkdir -p dist
 
 curl -sL "http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz" -o arch.tar.gz
 
-mkdir -p rootfs
-tar -xzf arch.tar.gz -C rootfs --no-same-permissions --no-same-owner 2>/dev/null || tar -xzf arch.tar.gz -C rootfs
-rm -rf rootfs/boot/*
-cd rootfs && tar -cf ../dist/archlinux-aarch64.tar . && cd ..
+# Recompress .tar.gz → .tar.xz without extracting (avoids symlink issues)
+gunzip -c arch.tar.gz | tar -cf dist/archlinux-aarch64.tar --no-recursion -T - 2>/dev/null || \
+  gunzip -c arch.tar.gz | tar -cf dist/archlinux-aarch64.tar -
 xz -9 dist/archlinux-aarch64.tar
-rm -rf arch.tar.gz rootfs
+rm -f arch.tar.gz
 
 echo "Done: dist/archlinux-aarch64.tar.xz"
