@@ -2,13 +2,8 @@ name: Sync Rootfs from Upstream
 
 on:
   schedule:
-    - cron: '0 0 * * 1'
+    - cron: '0 0 1 * *'  # First day of every month
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release version (e.g. v1, v2, v3)'
-        required: true
-        type: string
 
 permissions:
   contents: write
@@ -58,10 +53,14 @@ jobs:
         run: |
           ls -lh dist/
           if ls dist/*.tar.xz 1>/dev/null 2>&1; then
-            VERSION="${{ inputs.version }}"
-            if [ -z "$VERSION" ]; then
-              VERSION="v$(date +%s)"
+            LATEST=$(gh release list --limit 1 --json tagName -q '.[0].tagName' 2>/dev/null || echo "")
+            if [ -z "$LATEST" ] || [ "$LATEST" = "null" ]; then
+              NEXT=1
+            else
+              NUM=$(echo "$LATEST" | grep -oP '[0-9]+')
+              NEXT=$((NUM + 1))
             fi
+            VERSION="v${NEXT}"
             cd dist
             sha256sum *.tar.xz > SHA256SUMS
             cd ..
