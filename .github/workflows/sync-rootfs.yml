@@ -2,8 +2,11 @@ name: Sync Rootfs from Upstream
 
 on:
   schedule:
-    - cron: '0 0 * * 1'  # Every Monday
+    - cron: '0 0 * * 1'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   sync:
@@ -47,7 +50,6 @@ jobs:
         continue-on-error: true
 
       - name: Create release
-        if: success()
         run: |
           if ls dist/*.tar.xz 1>/dev/null 2>&1; then
             VERSION=$(date +%Y.%m.%d)
@@ -55,7 +57,6 @@ jobs:
             sha256sum *.tar.xz > SHA256SUMS
             cd ..
             gh release create "$VERSION" dist/* \
-              --repo ${{ github.repository }} \
               --title "Rootfs $VERSION" \
               --generate-notes
           else
