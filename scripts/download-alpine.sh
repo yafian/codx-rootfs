@@ -19,3 +19,5 @@ xz -9 "dist/alpine-${VERSION}-aarch64.tar"
 rm -rf alpine.tar.gz rootfs
 
 echo "Done: dist/alpine-${VERSION}-aarch64.tar.xz"
+
+echo "{\"id\":\"alpine\",\"version\":\"${VERSION}\",\"codename\":\"\",\"fileName\":\"alpine-${VERSION}-aarch64.tar.xz\"}" >> dist/metadata.jsonl

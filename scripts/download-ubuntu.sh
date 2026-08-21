@@ -15,3 +15,6 @@ docker rm ubuntu
 xz -9 "dist/ubuntu-${VERSION}-aarch64.tar"
 
 echo "Done: dist/ubuntu-${VERSION}-aarch64.tar.xz"
+
+CODENAME=$(curl -sL "https://cdimage.ubuntu.com/ubuntu-base/releases/${VERSION}/release/" 2>/dev/null | grep -oP 'Ubuntu [0-9.]+ \K[A-Z][a-z]+ [A-Z][a-z]+' | head -1 || echo "")
+echo "{\"id\":\"ubuntu\",\"version\":\"${VERSION}\",\"codename\":\"${CODENAME}\",\"fileName\":\"ubuntu-${VERSION}-aarch64.tar.xz\"}" >> dist/metadata.jsonl

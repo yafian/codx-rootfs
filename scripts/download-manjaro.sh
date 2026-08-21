@@ -30,3 +30,5 @@ sudo rm -rf manjaro.tar.gz rootfs
 
 ls -lh "dist/manjaro-${VERSION}-aarch64.tar.xz"
 echo "Done"
+
+echo "{\"id\":\"manjaro\",\"version\":\"${VERSION}\",\"codename\":\"\",\"fileName\":\"manjaro-${VERSION}-aarch64.tar.xz\"}" >> dist/metadata.jsonl

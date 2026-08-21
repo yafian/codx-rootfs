@@ -40,3 +40,5 @@ sudo rm -rf arch.tar.gz rootfs
 
 ls -lh "dist/archlinux-${VERSION}-aarch64.tar.xz"
 echo "Done"
+
+echo "{\"id\":\"archlinux\",\"version\":\"rolling\",\"codename\":\"\",\"fileName\":\"archlinux-${VERSION}-aarch64.tar.xz\"}" >> dist/metadata.jsonl

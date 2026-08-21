@@ -18,3 +18,5 @@ docker rm opensuse
 xz -9 "dist/opensuse-leap-${VERSION}-aarch64.tar"
 
 echo "Done: dist/opensuse-leap-${VERSION}-aarch64.tar.xz"
+
+echo "{\"id\":\"opensuse\",\"version\":\"${VERSION}\",\"codename\":\"Leap\",\"fileName\":\"opensuse-leap-${VERSION}-aarch64.tar.xz\"}" >> dist/metadata.jsonl

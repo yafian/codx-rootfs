@@ -14,3 +14,5 @@ docker rm debian
 xz -9 "dist/debian-${VERSION}-aarch64.tar"
 
 echo "Done: dist/debian-${VERSION}-aarch64.tar.xz"
+
+echo "{\"id\":\"debian\",\"version\":\"13\",\"codename\":\"Trixie\",\"fileName\":\"debian-${VERSION}-aarch64.tar.xz\"}" >> dist/metadata.jsonl

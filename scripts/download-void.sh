@@ -24,3 +24,5 @@ curl -sL "https://repo-default.voidlinux.org/live/${VERSION}/void-aarch64-ROOTFS
 
 ls -lh "dist/void-${VERSION}-aarch64.tar.xz"
 echo "Done: dist/void-${VERSION}-aarch64.tar.xz"
+
+echo "{\"id\":\"void\",\"version\":\"${VERSION}\",\"codename\":\"\",\"fileName\":\"void-${VERSION}-aarch64.tar.xz\"}" >> dist/metadata.jsonl
