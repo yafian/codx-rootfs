@@ -52,7 +52,7 @@ jobs:
       - name: Create release
         run: |
           if ls dist/*.tar.xz 1>/dev/null 2>&1; then
-            VERSION=$(date +%Y.%m.%d)
+            VERSION=$(date +%Y.%m.%d-%H%M)
             cd dist
             sha256sum *.tar.xz > SHA256SUMS
             cd ..
