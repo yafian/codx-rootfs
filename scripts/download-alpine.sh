@@ -14,8 +14,8 @@ curl -sL "https://dl-cdn.alpinelinux.org/alpine/v${BRANCH}/releases/aarch64/${FI
 
 mkdir -p rootfs
 tar -xzf alpine.tar.gz -C rootfs
-cd rootfs && tar -cf ../dist/alpine-aarch64.tar . && cd ..
-xz -9 dist/alpine-aarch64.tar
+cd rootfs && tar -cf "../dist/alpine-${VERSION}-aarch64.tar" . && cd ..
+xz -9 "dist/alpine-${VERSION}-aarch64.tar"
 rm -rf alpine.tar.gz rootfs
 
-echo "Done: dist/alpine-aarch64.tar.xz"
+echo "Done: dist/alpine-${VERSION}-aarch64.tar.xz"

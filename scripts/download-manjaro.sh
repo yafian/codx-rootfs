@@ -10,8 +10,8 @@ echo "Latest Manjaro: $VERSION"
 
 curl -sL "https://github.com/manjaro-arm/rootfs/releases/download/${VERSION}/Manjaro-ARM-aarch64-latest.tar.gz" -o manjaro.tar.gz
 
-gunzip -c manjaro.tar.gz > dist/manjaro-aarch64.tar
-xz -9 dist/manjaro-aarch64.tar
+gunzip -c manjaro.tar.gz > "dist/manjaro-${VERSION}-aarch64.tar"
+xz -9 "dist/manjaro-${VERSION}-aarch64.tar"
 rm -f manjaro.tar.gz
 
-echo "Done: dist/manjaro-aarch64.tar.xz"
+echo "Done: dist/manjaro-${VERSION}-aarch64.tar.xz"

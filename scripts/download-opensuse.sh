@@ -5,11 +5,12 @@ set -e
 echo "Downloading openSUSE Leap..."
 mkdir -p dist
 
-# Export Docker image as rootfs
-docker pull opensuse/leap:16.0
-docker create --name opensuse opensuse/leap:16.0
-docker export opensuse -o dist/opensuse-aarch64.tar
-docker rm opensuse
-xz -9 dist/opensuse-aarch64.tar
+VERSION="16.0"
 
-echo "Done: dist/opensuse-aarch64.tar.xz"
+docker pull opensuse/leap:${VERSION}
+docker create --name opensuse opensuse/leap:${VERSION}
+docker export opensuse -o "dist/opensuse-leap-${VERSION}-aarch64.tar"
+docker rm opensuse
+xz -9 "dist/opensuse-leap-${VERSION}-aarch64.tar"
+
+echo "Done: dist/opensuse-leap-${VERSION}-aarch64.tar.xz"
