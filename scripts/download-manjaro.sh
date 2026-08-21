@@ -1,5 +1,5 @@
 #!/bin/bash
-# download-manjaro.sh — Download Manjaro ARM rootfs
+# download-manjaro.sh — Download Manjaro ARM rootfs (kernel-stripped)
 set -e
 
 echo "Downloading Manjaro ARM..."
@@ -10,8 +10,17 @@ echo "Latest Manjaro: $VERSION"
 
 curl -sL "https://github.com/manjaro-arm/rootfs/releases/download/${VERSION}/Manjaro-ARM-aarch64-latest.tar.gz" -o manjaro.tar.gz
 
-gunzip -c manjaro.tar.gz > "dist/manjaro-${VERSION}-aarch64.tar"
+mkdir -p rootfs
+tar -xzf manjaro.tar.gz -C rootfs --no-same-permissions --no-same-owner 2>/dev/null
+
+# Strip kernel and firmware
+rm -rf rootfs/boot/*
+rm -rf rootfs/usr/lib/modules/*
+rm -rf rootfs/usr/share/doc/*
+
+cd rootfs && tar -cf "../dist/manjaro-${VERSION}-aarch64.tar" . && cd ..
 xz -9 "dist/manjaro-${VERSION}-aarch64.tar"
-rm -f manjaro.tar.gz
+rm -rf manjaro.tar.gz rootfs
 
 echo "Done: dist/manjaro-${VERSION}-aarch64.tar.xz"
+ls -lh "dist/manjaro-${VERSION}-aarch64.tar.xz"
