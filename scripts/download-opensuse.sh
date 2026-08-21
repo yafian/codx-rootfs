@@ -5,7 +5,11 @@ set -e
 echo "Downloading openSUSE Leap..."
 mkdir -p dist
 
-VERSION="16.0"
+VERSION=$(curl -sL "https://download.opensuse.org/distribution/leap/" | grep -oP 'href="[0-9]+\.[0-9]+"' | tail -1 | grep -oP '[0-9]+\.[0-9]+')
+if [ -z "$VERSION" ]; then
+  VERSION="16.0"
+fi
+echo "Latest openSUSE: $VERSION"
 
 docker pull opensuse/leap:${VERSION}
 docker create --name opensuse opensuse/leap:${VERSION}
