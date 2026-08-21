@@ -8,7 +8,7 @@ mkdir -p dist
 curl -sL "http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz" -o arch.tar.gz
 
 mkdir -p rootfs
-tar -xzf arch.tar.gz -C rootfs
+tar -xzf arch.tar.gz -C rootfs --no-same-permissions --no-same-owner 2>/dev/null || tar -xzf arch.tar.gz -C rootfs
 rm -rf rootfs/boot/*
 cd rootfs && tar -cf ../dist/archlinux-aarch64.tar . && cd ..
 xz -9 dist/archlinux-aarch64.tar

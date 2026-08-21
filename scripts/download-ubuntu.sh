@@ -5,8 +5,8 @@ set -e
 echo "Downloading Ubuntu..."
 mkdir -p dist
 
-VERSION=$(curl -sL "https://cdimage.ubuntu.com/ubuntu-base/releases/" | grep -oP 'href="[0-9]+\.[0-9]+/' | sort -t. -k1,1n -k2,2n | tail -1 | grep -oP '[0-9]+\.[0-9]+')
-echo "Latest Ubuntu: $VERSION"
+VERSION="25.10"
+echo "Ubuntu: $VERSION"
 
 curl -sL "https://cdimage.ubuntu.com/ubuntu-base/releases/${VERSION}/release/ubuntu-base-${VERSION}-base-arm64.tar.gz" -o ubuntu.tar.gz
 
