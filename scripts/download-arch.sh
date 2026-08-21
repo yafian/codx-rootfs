@@ -10,8 +10,7 @@ VERSION=$(date +%Y%m%d)
 curl -sL "http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz" -o arch.tar.gz
 
 sudo tar -xzf arch.tar.gz -C rootfs 2>/dev/null
-
-rm -rf rootfs/boot/* rootfs/usr/lib/modules/* rootfs/usr/share/doc/*
+sudo rm -rf rootfs/boot/* rootfs/usr/lib/modules/* rootfs/usr/share/doc/*
 
 sudo tar -cf "dist/archlinux-${VERSION}-aarch64.tar" -C rootfs .
 xz -9 "dist/archlinux-${VERSION}-aarch64.tar"

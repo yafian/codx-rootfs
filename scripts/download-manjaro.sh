@@ -11,8 +11,7 @@ echo "Latest Manjaro: $VERSION"
 curl -sL "https://github.com/manjaro-arm/rootfs/releases/download/${VERSION}/Manjaro-ARM-aarch64-latest.tar.gz" -o manjaro.tar.gz
 
 sudo tar -xzf manjaro.tar.gz -C rootfs 2>/dev/null
-
-rm -rf rootfs/boot/* rootfs/usr/lib/modules/* rootfs/usr/share/doc/*
+sudo rm -rf rootfs/boot/* rootfs/usr/lib/modules/* rootfs/usr/share/doc/*
 
 sudo tar -cf "dist/manjaro-${VERSION}-aarch64.tar" -C rootfs .
 xz -9 "dist/manjaro-${VERSION}-aarch64.tar"
