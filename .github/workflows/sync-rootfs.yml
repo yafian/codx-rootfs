@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 0 * * 1'
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. v1, v2, v3)'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -53,12 +58,15 @@ jobs:
         run: |
           ls -lh dist/
           if ls dist/*.tar.xz 1>/dev/null 2>&1; then
-            VERSION=$(date +%Y.%m.%d-%H%M)
+            VERSION="${{ inputs.version }}"
+            if [ -z "$VERSION" ]; then
+              VERSION="v$(date +%s)"
+            fi
             cd dist
             sha256sum *.tar.xz > SHA256SUMS
             cd ..
             gh release create "$VERSION" dist/*.tar.xz dist/SHA256SUMS \
-              --title "Rootfs $VERSION" \
+              --title "CodX rootfs $VERSION" \
               --generate-notes
           else
             echo "No rootfs files found"
