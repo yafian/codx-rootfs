@@ -11,19 +11,56 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Sync all distros
-        run: |
-          for script in scripts/download-*.sh; do
-            bash "$script"
-          done
+      - name: Create dist folder
+        run: mkdir -p dist
+
+      - name: Download Alpine
+        run: bash scripts/download-alpine.sh
+        continue-on-error: true
+
+      - name: Download Arch Linux
+        run: bash scripts/download-arch.sh
+        continue-on-error: true
+
+      - name: Download Debian
+        run: bash scripts/download-debian.sh
+        continue-on-error: true
+
+      - name: Download Ubuntu
+        run: bash scripts/download-ubuntu.sh
+        continue-on-error: true
+
+      - name: Download Rocky Linux
+        run: bash scripts/download-rocky.sh
+        continue-on-error: true
+
+      - name: Download openSUSE
+        run: bash scripts/download-opensuse.sh
+        continue-on-error: true
+
+      - name: Download Void Linux
+        run: bash scripts/download-void.sh
+        continue-on-error: true
+
+      - name: Download Manjaro
+        run: bash scripts/download-manjaro.sh
+        continue-on-error: true
 
       - name: Create release
+        if: success()
         run: |
-          VERSION=$(date +%Y.%m.%d)
-          find dist -name "*.tar.xz" -exec sha256sum {} \; > dist/SHA256SUMS
-          gh release create "$VERSION" dist/* \
-            --repo ${{ github.repository }} \
-            --title "Rootfs $VERSION" \
-            --generate-notes
+          if ls dist/*.tar.xz 1>/dev/null 2>&1; then
+            VERSION=$(date +%Y.%m.%d)
+            cd dist
+            sha256sum *.tar.xz > SHA256SUMS
+            cd ..
+            gh release create "$VERSION" dist/* \
+              --repo ${{ github.repository }} \
+              --title "Rootfs $VERSION" \
+              --generate-notes
+          else
+            echo "No rootfs files found"
+            exit 1
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
