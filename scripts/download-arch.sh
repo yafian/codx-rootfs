@@ -9,18 +9,13 @@ VERSION=$(date +%Y%m%d)
 
 curl -sL "http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz" -o arch.tar.gz
 
-# Extract with bsdtar (handles symlinks better)
-sudo apt-get install -y libarchive-tools 2>/dev/null || true
-bsdtar -xzf arch.tar.gz -C rootfs
+sudo tar -xzf arch.tar.gz -C rootfs 2>/dev/null
 
-# Strip kernel and firmware (proot doesn't need them)
-rm -rf rootfs/boot/*
-rm -rf rootfs/usr/lib/modules/*
-rm -rf rootfs/usr/share/doc/*
+rm -rf rootfs/boot/* rootfs/usr/lib/modules/* rootfs/usr/share/doc/*
 
-cd rootfs && tar -cf "../dist/archlinux-${VERSION}-aarch64.tar" . && cd ..
+sudo tar -cf "dist/archlinux-${VERSION}-aarch64.tar" -C rootfs .
 xz -9 "dist/archlinux-${VERSION}-aarch64.tar"
-rm -rf arch.tar.gz rootfs
+sudo rm -rf arch.tar.gz rootfs
 
-echo "Done: dist/archlinux-${VERSION}-aarch64.tar.xz"
 ls -lh "dist/archlinux-${VERSION}-aarch64.tar.xz"
+echo "Done"

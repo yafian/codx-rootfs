@@ -10,16 +10,13 @@ echo "Latest Manjaro: $VERSION"
 
 curl -sL "https://github.com/manjaro-arm/rootfs/releases/download/${VERSION}/Manjaro-ARM-aarch64-latest.tar.gz" -o manjaro.tar.gz
 
-sudo apt-get install -y libarchive-tools 2>/dev/null || true
-bsdtar -xzf manjaro.tar.gz -C rootfs
+sudo tar -xzf manjaro.tar.gz -C rootfs 2>/dev/null
 
-rm -rf rootfs/boot/*
-rm -rf rootfs/usr/lib/modules/*
-rm -rf rootfs/usr/share/doc/*
+rm -rf rootfs/boot/* rootfs/usr/lib/modules/* rootfs/usr/share/doc/*
 
-cd rootfs && tar -cf "../dist/manjaro-${VERSION}-aarch64.tar" . && cd ..
+sudo tar -cf "dist/manjaro-${VERSION}-aarch64.tar" -C rootfs .
 xz -9 "dist/manjaro-${VERSION}-aarch64.tar"
-rm -rf manjaro.tar.gz rootfs
+sudo rm -rf manjaro.tar.gz rootfs
 
-echo "Done: dist/manjaro-${VERSION}-aarch64.tar.xz"
 ls -lh "dist/manjaro-${VERSION}-aarch64.tar.xz"
+echo "Done"
