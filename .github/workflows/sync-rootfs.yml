@@ -73,3 +73,17 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete old releases (keep last 2)
+        run: |
+          RELEASES=$(gh release list --limit 100 --json tagName,isLatest,updatedAt --jq 'sort_by(.updatedAt) | reverse')
+          COUNT=$(echo "$RELEASES" | python3 -c "import sys,json; print(len(json.load(sys.stdin)))")
+          if [ "$COUNT" -gt 2 ]; then
+            DELETE=$(echo "$RELEASES" | python3 -c "import sys,json; releases=json.load(sys.stdin); [print(r['tagName']) for r in releases[2:]]")
+            for TAG in $DELETE; do
+              echo "Deleting old release: $TAG"
+              gh release delete "$TAG" --yes --cleanup-tag
+            done
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
