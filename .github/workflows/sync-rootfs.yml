@@ -137,24 +137,27 @@ jobs:
 
       - name: Delete old releases (keep last 2)
         run: |
-          python3 << 'PYEOF'
-          import json, subprocess
-
-          result = subprocess.run(
-              ["gh", "release", "list", "--limit", "100", "--json", "tagName,updatedAt"],
-              capture_output=True, text=True
-          )
-          releases = json.loads(result.stdout)
-          releases.sort(key=lambda r: r["updatedAt"], reverse=True)
-
-          if len(releases) <= 2:
-              print(f"Only {len(releases)} releases, nothing to delete")
-              exit(0)
-
+          RELEASES=$(curl -s \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            | python3 -c "
+          import sys, json
+          releases = json.load(sys.stdin)
+          releases.sort(key=lambda r: r['created_at'], reverse=True)
           for r in releases[2:]:
-              tag = r["tagName"]
-              print(f"Deleting old release: {tag}")
-              subprocess.run(["gh", "release", "delete", tag, "--yes", "--cleanup-tag"], check=False)
-          PYEOF
+              print(r['tag_name'])
+          ")
+          for TAG in $RELEASES; do
+            echo "Deleting release: $TAG"
+            curl -s -X DELETE \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/$TAG"
+            curl -s -X DELETE \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$GITHUB_REPOSITORY/git/refs/tags/$TAG" || true
+          done
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
