@@ -1,28 +1,33 @@
 #!/bin/bash
-# download-void.sh — Download Void Linux ROOTFS
+# download-void.sh — Download Void Linux aarch64 rootfs
 set -e
 
 echo "Downloading Void Linux..."
-mkdir -p dist
 
-# Find latest date that has ROOTFS files
-for DATE in $(curl -sL "https://repo-default.voidlinux.org/live/" | grep -oP '[0-9]{8}' | sort -r); do
-  if curl -sI "https://repo-default.voidlinux.org/live/${DATE}/void-aarch64-ROOTFS-${DATE}.tar.xz" | grep -q "200 OK"; then
-    VERSION=$DATE
-    break
-  fi
-done
-
-if [ -z "$VERSION" ]; then
-  echo "No Void Linux ROOTFS found"
+# Find latest ROOTFS from official Void Linux live directory
+LATEST=$(curl -sL "https://repo-default.voidlinux.org/live/" | grep -oP 'href="void-aarch64-ROOTFS-[0-9]+\.tar\.xz"' | grep -oP '[0-9]+' | sort -n | tail -1)
+if [ -z "$LATEST" ]; then
+  echo "ERROR: Could not determine latest Void ROOTFS version"
   exit 1
 fi
+echo "Latest Void ROOTFS: $LATEST"
 
-echo "Latest Void: $VERSION"
+mkdir -p dist rootfs
 
-curl -sL "https://repo-default.voidlinux.org/live/${VERSION}/void-aarch64-ROOTFS-${VERSION}.tar.xz" -o "dist/void-${VERSION}-aarch64.tar.xz"
+curl -fsSL --connect-timeout 30 --max-time 1800 \
+  "https://repo-default.voidlinux.org/live/void-aarch64-ROOTFS-${LATEST}.tar.xz" \
+  -o void-rootfs.tar.xz
 
-ls -lh "dist/void-${VERSION}-aarch64.tar.xz"
-echo "Done: dist/void-${VERSION}-aarch64.tar.xz"
+tar -xJf void-rootfs.tar.xz -C rootfs
+sudo chown -R $(id -u):$(id -g) rootfs
 
-echo "{\"id\":\"void\",\"version\":\"${VERSION}\",\"codename\":\"\",\"fileName\":\"void-${VERSION}-aarch64.tar.xz\"}" >> dist/metadata.jsonl
+cd rootfs
+tar -cf "../dist/void-linux-${LATEST}-aarch64.tar" .
+cd ..
+xz -9 "dist/void-linux-${LATEST}-aarch64.tar"
+rm -rf void-rootfs.tar.xz rootfs
+
+ls -lh "dist/void-linux-${LATEST}-aarch64.tar.xz"
+echo "Done"
+
+echo "{\"id\":\"void\",\"version\":\"${LATEST}\",\"codename\":\"\",\"fileName\":\"void-linux-${LATEST}-aarch64.tar.xz\"}" >> dist/metadata.jsonl

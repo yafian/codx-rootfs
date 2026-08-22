@@ -45,6 +45,10 @@ jobs:
         run: bash scripts/download-manjaro.sh
         continue-on-error: true
 
+      - name: Download Void Linux
+        run: bash scripts/download-void.sh
+        continue-on-error: true
+
       - name: Generate versions.json
         run: |
           python3 << 'PYEOF'
@@ -75,7 +79,7 @@ jobs:
 
               if not info:
                   for prefix in ["opensuse-leap", "archlinux", "debian", "ubuntu",
-                                  "alpine", "rocky", "manjaro"]:
+                                  "alpine", "rocky", "manjaro", "void-linux"]:
                       if basename.startswith(prefix):
                           info = {"id": prefix, "version": "", "codename": ""}
                           break
