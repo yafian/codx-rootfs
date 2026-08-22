@@ -35,6 +35,7 @@ sudo rm -rf rootfs/var/lib/pacman/local/linux-aarch64*
 sudo rm -rf rootfs/var/lib/pacman/local/linux-firmware*
 
 sudo tar -cf "dist/archlinux-${VERSION}-aarch64.tar" -C rootfs .
+sudo chown $(id -u):$(id -g) "dist/archlinux-${VERSION}-aarch64.tar"
 xz -9 "dist/archlinux-${VERSION}-aarch64.tar"
 rm -rf arch.tar.gz rootfs
 

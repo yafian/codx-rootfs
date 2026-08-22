@@ -27,6 +27,7 @@ sudo rm -rf rootfs/usr/share/glib-2.0/*
 sudo rm -rf rootfs/var/cache/pacman/*
 
 sudo tar -cf "dist/manjaro-${VERSION}-aarch64.tar" -C rootfs .
+sudo chown $(id -u):$(id -g) "dist/manjaro-${VERSION}-aarch64.tar"
 xz -9 "dist/manjaro-${VERSION}-aarch64.tar"
 rm -rf manjaro.tar.gz rootfs
 
