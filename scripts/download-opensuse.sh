@@ -5,7 +5,7 @@ set -e
 echo "Downloading openSUSE Leap..."
 mkdir -p dist
 
-VERSION=$(curl -sL "https://download.opensuse.org/distribution/leap/" | grep -oP 'href="\./([0-9]+\.[0-9]+)/' | grep -oP '[0-9]+\.[0-9]+' | sort -t. -k1,1n -k2,2n | tail -1 || true)
+VERSION=$(curl -sL "https://download.opensuse.org/distribution/leap/" | grep -oP 'href="\./([0-9]+\.[0-9]+)/' | grep -oP '[0-9]+\.[0-9]+' | awk -F. '$1 >= 15' | sort -t. -k1,1n -k2,2n | tail -1 || true)
 if [ -z "$VERSION" ]; then
   VERSION="16.1"
 fi

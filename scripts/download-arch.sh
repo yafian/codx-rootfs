@@ -12,8 +12,9 @@ curl -fsSL --connect-timeout 30 --max-time 1800 \
   -o arch.tar.gz
 
 sudo tar -xzf arch.tar.gz -C rootfs
+sudo chown -R $(id -u):$(id -g) rootfs
 
-sudo rm -rf \
+rm -rf \
   rootfs/boot/* \
   rootfs/usr/lib/modules/* \
   rootfs/usr/lib/firmware/* \
@@ -31,11 +32,10 @@ sudo rm -rf \
   rootfs/usr/lib/systemd/system/*suspend* \
   rootfs/usr/lib/systemd/system/*hibernate*
 
-sudo rm -rf rootfs/var/lib/pacman/local/linux-aarch64*
-sudo rm -rf rootfs/var/lib/pacman/local/linux-firmware*
+rm -rf rootfs/var/lib/pacman/local/linux-aarch64*
+rm -rf rootfs/var/lib/pacman/local/linux-firmware*
 
-sudo tar -cf "dist/archlinux-${VERSION}-aarch64.tar" -C rootfs .
-sudo chown $(id -u):$(id -g) "dist/archlinux-${VERSION}-aarch64.tar"
+tar -cf "dist/archlinux-${VERSION}-aarch64.tar" -C rootfs .
 xz -9 "dist/archlinux-${VERSION}-aarch64.tar"
 rm -rf arch.tar.gz rootfs
 
