@@ -12,21 +12,21 @@ curl -fsSL --connect-timeout 30 --max-time 1800 \
   "https://github.com/manjaro-arm/rootfs/releases/download/${VERSION}/Manjaro-ARM-aarch64-latest.tar.gz" \
   -o manjaro.tar.gz
 
-tar -xzf manjaro.tar.gz --no-same-owner --no-same-permissions -C rootfs
+sudo tar -xzf manjaro.tar.gz -C rootfs
 
-rm -rf rootfs/boot/*
-rm -rf rootfs/usr/lib/modules/*
-rm -rf rootfs/usr/lib/firmware/*
-rm -rf rootfs/usr/share/doc/*
-rm -rf rootfs/usr/share/man/*
-rm -rf rootfs/usr/share/info/*
-rm -rf rootfs/usr/share/locale/*
-rm -rf rootfs/usr/share/i18n/*
-rm -rf rootfs/usr/share/gtk-doc/*
-rm -rf rootfs/usr/share/glib-2.0/*
-rm -rf rootfs/var/cache/pacman/*
+sudo rm -rf rootfs/boot/*
+sudo rm -rf rootfs/usr/lib/modules/*
+sudo rm -rf rootfs/usr/lib/firmware/*
+sudo rm -rf rootfs/usr/share/doc/*
+sudo rm -rf rootfs/usr/share/man/*
+sudo rm -rf rootfs/usr/share/info/*
+sudo rm -rf rootfs/usr/share/locale/*
+sudo rm -rf rootfs/usr/share/i18n/*
+sudo rm -rf rootfs/usr/share/gtk-doc/*
+sudo rm -rf rootfs/usr/share/glib-2.0/*
+sudo rm -rf rootfs/var/cache/pacman/*
 
-tar -cf "dist/manjaro-${VERSION}-aarch64.tar" --no-same-owner --no-same-permissions -C rootfs .
+sudo tar -cf "dist/manjaro-${VERSION}-aarch64.tar" -C rootfs .
 xz -9 "dist/manjaro-${VERSION}-aarch64.tar"
 rm -rf manjaro.tar.gz rootfs
 

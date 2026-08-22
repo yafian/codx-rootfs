@@ -13,9 +13,8 @@ echo "Latest openSUSE: $VERSION"
 
 sudo docker pull opensuse/leap:${VERSION}
 sudo docker create --name opensuse opensuse/leap:${VERSION}
-sudo docker export opensuse -o "dist/opensuse-leap-${VERSION}-aarch64.tar"
+sudo docker export opensuse | sudo tee "dist/opensuse-leap-${VERSION}-aarch64.tar" > /dev/null
 sudo docker rm opensuse
-sudo chown $(id -u):$(id -g) "dist/opensuse-leap-${VERSION}-aarch64.tar"
 xz -9 "dist/opensuse-leap-${VERSION}-aarch64.tar"
 
 echo "Done: dist/opensuse-leap-${VERSION}-aarch64.tar.xz"

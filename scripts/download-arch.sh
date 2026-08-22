@@ -11,9 +11,9 @@ curl -fsSL --connect-timeout 30 --max-time 1800 \
   "http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz" \
   -o arch.tar.gz
 
-tar -xzf arch.tar.gz --no-same-owner --no-same-permissions -C rootfs
+sudo tar -xzf arch.tar.gz -C rootfs
 
-rm -rf \
+sudo rm -rf \
   rootfs/boot/* \
   rootfs/usr/lib/modules/* \
   rootfs/usr/lib/firmware/* \
@@ -31,10 +31,10 @@ rm -rf \
   rootfs/usr/lib/systemd/system/*suspend* \
   rootfs/usr/lib/systemd/system/*hibernate*
 
-rm -rf rootfs/var/lib/pacman/local/linux-aarch64*
-rm -rf rootfs/var/lib/pacman/local/linux-firmware*
+sudo rm -rf rootfs/var/lib/pacman/local/linux-aarch64*
+sudo rm -rf rootfs/var/lib/pacman/local/linux-firmware*
 
-tar -cf "dist/archlinux-${VERSION}-aarch64.tar" --no-same-owner --no-same-permissions -C rootfs .
+sudo tar -cf "dist/archlinux-${VERSION}-aarch64.tar" -C rootfs .
 xz -9 "dist/archlinux-${VERSION}-aarch64.tar"
 rm -rf arch.tar.gz rootfs
 
