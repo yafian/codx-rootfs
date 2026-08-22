@@ -12,7 +12,7 @@ curl -fsSL --connect-timeout 30 --max-time 1800 \
   "https://github.com/manjaro-arm/rootfs/releases/download/${VERSION}/Manjaro-ARM-aarch64-latest.tar.gz" \
   -o manjaro.tar.gz
 
-sudo tar --no-same-permissions --no-same-owner -xzf manjaro.tar.gz -C rootfs
+sudo tar -xzf manjaro.tar.gz -C rootfs
 sudo chown -R $(id -u):$(id -g) rootfs
 
 rm -rf rootfs/boot/*

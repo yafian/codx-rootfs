@@ -5,9 +5,24 @@ set -e
 echo "Downloading openSUSE Leap..."
 mkdir -p dist
 
-VERSION=$(curl -sL "https://download.opensuse.org/distribution/leap/" | grep -oP 'href="\./([0-9]+\.[0-9]+)/' | grep -oP '[0-9]+\.[0-9]+' | awk -F. '$1 == 15 || $1 == 16' | sort -t. -k1,1n -k2,2n | tail -1 || true)
+VERSION=$(curl -sL "https://hub.docker.com/v2/repositories/opensuse/leap/tags?page_size=100&ordering=last_updated" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+versions = []
+for r in data['results']:
+    name = r['name']
+    parts = name.split('.')
+    if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
+        major = int(parts[0])
+        minor = int(parts[1])
+        if major >= 15:
+            versions.append((major, minor, name))
+versions.sort()
+if versions:
+    print(versions[-1][2])
+" || true)
 if [ -z "$VERSION" ]; then
-  VERSION="16.1"
+  VERSION="16.0"
 fi
 echo "Latest openSUSE: $VERSION"
 
