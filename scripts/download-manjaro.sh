@@ -18,6 +18,7 @@ curl -fsSL --connect-timeout 30 --max-time 1800 \
 
 sudo tar -xzf manjaro.tar.gz --exclude='./usr/lib/dbus-daemon-launch-helper' -C rootfs
 sudo chown -R $(id -u):$(id -g) rootfs
+find rootfs -type d -exec chmod u+rwx {} +
 
 rm -rf rootfs/boot/*
 rm -rf rootfs/usr/lib/modules/*

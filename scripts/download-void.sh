@@ -27,6 +27,7 @@ curl -fsSL --connect-timeout 30 --max-time 1800 \
   -o void-rootfs.tar.xz
 
 tar -xJf void-rootfs.tar.xz -C rootfs
+find rootfs -type d -exec chmod u+rwx {} +
 
 cd rootfs
 tar -cf "../dist/void-linux-${LATEST_DIR}-aarch64.tar" .
