@@ -11,7 +11,7 @@ curl -fsSL --connect-timeout 30 --max-time 1800 \
   "http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz" \
   -o arch.tar.gz
 
-sudo tar -xzf arch.tar.gz -C rootfs
+sudo tar -xzf arch.tar.gz -C rootfs || true
 sudo chown -R $(id -u):$(id -g) rootfs
 
 rm -rf \

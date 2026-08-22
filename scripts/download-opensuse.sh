@@ -15,7 +15,7 @@ for r in data['results']:
     if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
         major = int(parts[0])
         minor = int(parts[1])
-        if major >= 15:
+        if 15 <= major < 40:
             versions.append((major, minor, name))
 versions.sort()
 if versions:
