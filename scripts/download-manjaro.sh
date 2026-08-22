@@ -5,18 +5,10 @@ set -e
 echo "Downloading Manjaro ARM..."
 mkdir -p dist rootfs
 
-VERSION=$(curl -sL --connect-timeout 30 --max-time 60 \
-  -H "Authorization: token $GITHUB_TOKEN" \
-  "https://api.github.com/repos/manjaro-arm/rootfs/releases/latest" 2>/dev/null \
-  | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tag_name',''))" 2>/dev/null || true)
+VERSION=$(curl -sL --connect-timeout 30 --max-time 60 "https://api.github.com/repos/manjaro-arm/rootfs/releases/latest" | python3 -c "import sys,json; print(json.load(sys.stdin).get('tag_name',''))" 2>/dev/null || true)
 
 if [ -z "$VERSION" ]; then
-  VERSION=$(curl -sL "https://api.github.com/repos/manjaro-arm/rootfs/releases/latest" | python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])" 2>/dev/null || echo "")
-fi
-
-if [ -z "$VERSION" ]; then
-  echo "ERROR: Could not determine Manjaro version"
-  exit 1
+  VERSION="20260817"
 fi
 echo "Latest Manjaro: $VERSION"
 
@@ -24,7 +16,7 @@ curl -fsSL --connect-timeout 30 --max-time 1800 \
   "https://github.com/manjaro-arm/rootfs/releases/download/${VERSION}/Manjaro-ARM-aarch64-latest.tar.gz" \
   -o manjaro.tar.gz
 
-sudo tar -xzf manjaro.tar.gz -C rootfs || true
+sudo tar -xzf manjaro.tar.gz --exclude='./usr/lib/dbus-daemon-launch-helper' -C rootfs
 sudo chown -R $(id -u):$(id -g) rootfs
 
 rm -rf rootfs/boot/*
