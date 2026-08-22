@@ -8,9 +8,11 @@ mkdir -p dist rootfs
 VERSION=$(curl -sL "https://api.github.com/repos/manjaro-arm/rootfs/releases/latest" | python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])")
 echo "Latest Manjaro: $VERSION"
 
-curl -sL "https://github.com/manjaro-arm/rootfs/releases/download/${VERSION}/Manjaro-ARM-aarch64-latest.tar.gz" -o manjaro.tar.gz
+curl -fsSL --connect-timeout 30 --max-time 1800 \
+  "https://github.com/manjaro-arm/rootfs/releases/download/${VERSION}/Manjaro-ARM-aarch64-latest.tar.gz" \
+  -o manjaro.tar.gz
 
-tar -xzf manjaro.tar.gz --no-same-owner -C rootfs 2>/dev/null
+tar -xzf manjaro.tar.gz --no-same-owner -C rootfs
 
 rm -rf rootfs/boot/*
 rm -rf rootfs/usr/lib/modules/*

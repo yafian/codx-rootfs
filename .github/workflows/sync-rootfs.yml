@@ -22,7 +22,8 @@ jobs:
         continue-on-error: true
 
       - name: Download Arch Linux
-        run: bash scripts/download-arch.sh 2>&1 || true
+        run: bash scripts/download-arch.sh
+        continue-on-error: true
 
       - name: Download Debian
         run: bash scripts/download-debian.sh
@@ -40,19 +41,15 @@ jobs:
         run: bash scripts/download-opensuse.sh
         continue-on-error: true
 
-      - name: Download Void Linux
-        run: bash scripts/download-void.sh
-        continue-on-error: true
-
       - name: Download Manjaro
-        run: bash scripts/download-manjaro.sh 2>&1 || true
+        run: bash scripts/download-manjaro.sh
+        continue-on-error: true
 
       - name: Generate versions.json
         run: |
           python3 << 'PYEOF'
           import json, hashlib, os, glob
 
-          # Load metadata from download scripts
           metadata = {}
           meta_path = "dist/metadata.jsonl"
           if os.path.exists(meta_path):
@@ -64,25 +61,21 @@ jobs:
                       entry = json.loads(line)
                       metadata[entry["id"]] = entry
 
-          # Build versions.json from actual files
           versions = []
           for f in sorted(glob.glob("dist/*.tar.xz")):
               basename = os.path.basename(f)
               size = os.path.getsize(f)
               sha256 = hashlib.sha256(open(f, "rb").read()).hexdigest()
 
-              # Find matching metadata by filename
               info = None
               for entry in metadata.values():
                   if entry.get("fileName") == basename:
                       info = entry
                       break
 
-              # Fallback: extract id from filename
               if not info:
-                  # Try common patterns
                   for prefix in ["opensuse-leap", "archlinux", "debian", "ubuntu",
-                                  "alpine", "rocky", "void", "manjaro"]:
+                                  "alpine", "rocky", "manjaro"]:
                       if basename.startswith(prefix):
                           info = {"id": prefix, "version": "", "codename": ""}
                           break

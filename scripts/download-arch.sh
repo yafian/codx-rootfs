@@ -7,9 +7,11 @@ mkdir -p dist rootfs
 
 VERSION=$(date +%Y%m%d)
 
-curl -sL "http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz" -o arch.tar.gz
+curl -fsSL --connect-timeout 30 --max-time 1800 \
+  "http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz" \
+  -o arch.tar.gz
 
-tar -xzf arch.tar.gz --no-same-owner -C rootfs 2>/dev/null
+tar -xzf arch.tar.gz --no-same-owner -C rootfs
 
 rm -rf \
   rootfs/boot/* \
