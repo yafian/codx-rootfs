@@ -10,7 +10,7 @@ echo "Latest Manjaro: $VERSION"
 
 curl -sL "https://github.com/manjaro-arm/rootfs/releases/download/${VERSION}/Manjaro-ARM-aarch64-latest.tar.gz" -o manjaro.tar.gz
 
-tar -xzf manjaro.tar.gz -C rootfs 2>/dev/null
+tar -xzf manjaro.tar.gz --no-same-owner -C rootfs 2>/dev/null
 
 rm -rf rootfs/boot/*
 rm -rf rootfs/usr/lib/modules/*
@@ -24,7 +24,7 @@ rm -rf rootfs/usr/share/gtk-doc/*
 rm -rf rootfs/usr/share/glib-2.0/*
 rm -rf rootfs/var/cache/pacman/*
 
-tar -cf "dist/manjaro-${VERSION}-aarch64.tar" -C rootfs .
+tar -cf "dist/manjaro-${VERSION}-aarch64.tar" --no-same-owner -C rootfs .
 xz -9 "dist/manjaro-${VERSION}-aarch64.tar"
 rm -rf manjaro.tar.gz rootfs
 

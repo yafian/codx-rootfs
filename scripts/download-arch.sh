@@ -9,7 +9,7 @@ VERSION=$(date +%Y%m%d)
 
 curl -sL "http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz" -o arch.tar.gz
 
-tar -xzf arch.tar.gz -C rootfs 2>/dev/null
+tar -xzf arch.tar.gz --no-same-owner -C rootfs 2>/dev/null
 
 rm -rf \
   rootfs/boot/* \
@@ -32,7 +32,7 @@ rm -rf \
 rm -rf rootfs/var/lib/pacman/local/linux-aarch64*
 rm -rf rootfs/var/lib/pacman/local/linux-firmware*
 
-tar -cf "dist/archlinux-${VERSION}-aarch64.tar" -C rootfs .
+tar -cf "dist/archlinux-${VERSION}-aarch64.tar" --no-same-owner -C rootfs .
 xz -9 "dist/archlinux-${VERSION}-aarch64.tar"
 rm -rf arch.tar.gz rootfs
 
