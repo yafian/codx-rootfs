@@ -12,7 +12,7 @@ curl -fsSL --connect-timeout 30 --max-time 1800 \
   "https://github.com/manjaro-arm/rootfs/releases/download/${VERSION}/Manjaro-ARM-aarch64-latest.tar.gz" \
   -o manjaro.tar.gz
 
-tar -xzf manjaro.tar.gz --no-same-owner -C rootfs
+tar -xzf manjaro.tar.gz --no-same-owner --no-same-permissions -C rootfs
 
 rm -rf rootfs/boot/*
 rm -rf rootfs/usr/lib/modules/*
@@ -26,7 +26,7 @@ rm -rf rootfs/usr/share/gtk-doc/*
 rm -rf rootfs/usr/share/glib-2.0/*
 rm -rf rootfs/var/cache/pacman/*
 
-tar -cf "dist/manjaro-${VERSION}-aarch64.tar" --no-same-owner -C rootfs .
+tar -cf "dist/manjaro-${VERSION}-aarch64.tar" --no-same-owner --no-same-permissions -C rootfs .
 xz -9 "dist/manjaro-${VERSION}-aarch64.tar"
 rm -rf manjaro.tar.gz rootfs
 
